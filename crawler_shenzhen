@@ -11,8 +11,8 @@ import time
 import requests
 from pprint import pprint
 from twilio.rest import Client
-auth_token = '6a48590a1ae3ca85d487a0fcaca5bc26'   #去twilio.com注册账户获取token
-account_sid = 'ACa6161046fa47018ff06f167634f85c18'
+auth_token = ''   #去twilio.com注册账户获取token
+account_sid = ''
 client = Client(account_sid,auth_token)
 name_all=["test"]
 text = '深圳的爬虫出问题了，需要调试'
@@ -20,7 +20,7 @@ i = 1
 
 def sent_message(phone_number):
     mes = client.messages.create(
-        from_='+14093163794',  #填写在active number处获得的号码 
+        from_='',  #填写在active number处获得的号码 
         body=text,
         to=phone_number
     )
