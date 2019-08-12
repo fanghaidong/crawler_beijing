@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jul  3 14:12:10 2019
+
+@author: FHD
+"""
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import time
+import requests
+from pprint import pprint
+from twilio.rest import Client
+auth_token = '6a48590a1ae3ca85d487a0fcaca5bc26'   #去twilio.com注册账户获取token
+account_sid = 'ACa6161046fa47018ff06f167634f85c18'
+client = Client(account_sid,auth_token)
+name_all=["test"]
+text = '深圳的爬虫出问题了，需要调试'
+i = 1
+
+def sent_message(phone_number):
+    mes = client.messages.create(
+        from_='+14093163794',  #填写在active number处获得的号码 
+        body=text,
+        to=phone_number
+    )
+    print("网站崩溃，消息已发送")
+
+
+while i <= 10000000000:
+    try:
+        head={'User-Agent':'Mozilla/5.0'}
+        driver = requests.get('http://tocc.jtys.sz.gov.cn/req//earlyWarning/getRoadStatus',headers=head)
+
+    except Exception as e:
+        print("网站崩溃")
+        print("Exception:{}".format(e))
+        sent_message("+8618810735887")
+        time.sleep(60)
+        
+    else:
+        content = driver.text
+
+        if content.find("SPEED") >=0:
+            localtime = time.localtime(time.time())
+            year = localtime[0]
+            month = localtime[1]
+            day = localtime[2]
+            hour = localtime[3]
+            minute = localtime[4]
+            name = str(year)+"年"+str(month)+"月"+str(day)+"日"+str(hour)+"时"+str(minute)+"分"
+            name_all.append(name)
+    
+            if name != name_all[i-1]:
+                f = open("G:/全国主要交通拥堵路段数据爬虫/shenzhen/"+name+".txt",'w')
+                f.writelines(content)
+                f.close()
+        else:
+            name_all.append("no_data")
+        i = i+1
+        print("循环第"+str(i)+"次,请勿关闭")
+        time.sleep(60)
+        
+
+#data = json.loads(b)
+
+
